@@ -8,10 +8,10 @@ modified where necessary, and verified before being accepted.
 
 ## Backend authorship
 
-> I designed and implemented the backend manually. ChatGPT was used sparingly
-> as a structural review tool, mainly to discuss organization, edge cases, and
+> I designed and implemented the backend manually. ChatGPT was used
+> as a structural review tool, mainly to discuss organization, some edge cases, and
 > testing considerations. I reviewed every suggestion and made the final
-> implementation decisions myself.
+> implementation decisions myself with just some syntax help from ChatGPT. 
 
 Git history supports this distinction. Commit `9a268df` contains the original
 Yahoo Finance backend, while later work in `fd3c165` adds tests and focused
@@ -1638,3 +1638,8 @@ documentation-only so the Git history remained understandable.
 
 Commit `fb8f2cf` (`Add MarketPulse project documentation`) is present on
 `master`.
+
+
+### Developer's note
+
+I decided to build the backend more manually since I like to test the APIs along the development and it gives me a feeling of ownership, I used Codex to help me build the backend because I think changing CSS can be annoying and hard to find the exact place that is holding the values for the specific UI component I want to change. I also decided to use ChatGPT to optimize my prompts before feeding them to Codex, I usually explain my goals and the technical requirements, however it is not that different from the generated prompt, just better formatted.
