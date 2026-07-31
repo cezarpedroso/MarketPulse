@@ -1642,4 +1642,4 @@ Commit `fb8f2cf` (`Add MarketPulse project documentation`) is present on
 
 ### Developer's note
 
-I decided to build the backend more manually since I like to test the APIs along the development and it gives me a feeling of ownership, I used Codex to help me build the backend because I think changing CSS can be annoying and hard to find the exact place that is holding the values for the specific UI component I want to change. I also decided to use ChatGPT to optimize my prompts before feeding them to Codex, I usually explain my goals and the technical requirements, however it is not that different from the generated prompt, just better formatted.
+I chose to build most of the backend manually because I prefer testing API behavior throughout development, and it gave me stronger ownership of the implementation. I mainly used Codex for frontend implementation and refinement, especially when locating and adjusting CSS rules across components. I also used ChatGPT to help structure some of my Codex prompts. The technical goals and requirements were mine, while ChatGPT helped organize them more clearly.
