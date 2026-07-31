@@ -1,79 +1,50 @@
-import {
-  BarChart3,
-  CalendarDays,
-  CalendarRange,
-  Tag,
-  TrendingDown,
-  TrendingUp,
-  type LucideIcon,
-} from "lucide-react";
 import type { MarketSummary } from "../../utils/stockData";
 import {
   formatAverage,
+  formatCompactVolume,
   formatDateRange,
-  formatVolume,
 } from "../../utils/formatters";
 
 interface SummaryCardsProps {
-  symbol: string;
   summary: MarketSummary;
 }
 
 interface SummaryCard {
   label: string;
   value: string;
-  tone: "blue" | "green" | "red" | "purple";
-  icon: LucideIcon;
+  tone?: "low" | "high";
 }
 
-export function SummaryCards({ symbol, summary }: SummaryCardsProps) {
+export function SummaryCards({ summary }: SummaryCardsProps) {
   const cards: SummaryCard[] = [
-    { label: "Symbol", value: symbol, tone: "blue", icon: Tag },
     {
-      label: "Date Range",
+      label: "Date range",
       value: formatDateRange(summary.startDay, summary.endDay),
-      tone: "purple",
-      icon: CalendarRange,
     },
     {
-      label: "Trading Days",
-      value: formatVolume(summary.tradingDays),
-      tone: "blue",
-      icon: CalendarDays,
-    },
-    {
-      label: "Overall Average Low",
+      label: "Average daily low",
       value: formatAverage(summary.overallAverageLow),
-      tone: "red",
-      icon: TrendingDown,
+      tone: "low",
     },
     {
-      label: "Overall Average High",
+      label: "Average daily high",
       value: formatAverage(summary.overallAverageHigh),
-      tone: "green",
-      icon: TrendingUp,
+      tone: "high",
     },
     {
-      label: "Total Volume",
-      value: formatVolume(summary.totalVolume),
-      tone: "purple",
-      icon: BarChart3,
+      label: "Total volume",
+      value: formatCompactVolume(summary.totalVolume),
     },
   ];
 
   return (
     <dl className="summary-grid" aria-label="Market summary">
-      {cards.map(({ icon: Icon, ...card }) => (
+      {cards.map((card) => (
         <div
-          className={`summary-card summary-card-${card.tone}`}
+          className={`summary-card${card.tone ? ` summary-card-${card.tone}` : ""}`}
           key={card.label}
         >
-          <div className="summary-label">
-            <span className="summary-icon" aria-hidden="true">
-              <Icon size={16} strokeWidth={2} />
-            </span>
-            <dt>{card.label}</dt>
-          </div>
+          <dt>{card.label}</dt>
           <dd>{card.value}</dd>
         </div>
       ))}
