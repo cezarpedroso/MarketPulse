@@ -1,13 +1,91 @@
+using MarketPulse.Api.Clients;
+using MarketPulse.Api.Configuration;
+using MarketPulse.Api.Endpoints;
+using MarketPulse.Api.Exceptions;
+using MarketPulse.Api.Services;
+using Microsoft.Extensions.Options;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddProblemDetails();
+
+builder.Services.AddScoped<
+    IStockMarketService,
+    StockMarketService>();
+
+builder.Services.Configure<YahooFinanceOptions>(
+    builder.Configuration.GetSection("YahooFinance"));
+
+builder.Services.AddHttpClient<
+    IStockMarketClient,
+    YahooFinanceClient>((sp, client) =>
+    {
+        var opts = sp.GetRequiredService<IOptions<YahooFinanceOptions>>().Value;
+
+        client.BaseAddress = new Uri(
+            opts.BaseUrl ?? "https://query1.finance.yahoo.com");
+
+        client.Timeout = TimeSpan.FromSeconds(
+            opts.TimeoutSeconds > 0 ? opts.TimeoutSeconds : 15);
+
+        client.DefaultRequestHeaders.UserAgent.ParseAdd(
+            "Mozilla/5.0 MarketPulsePractice/1.0");
+    });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+app.UseExceptionHandler(exceptionHandlerApp =>
+{
+    exceptionHandlerApp.Run(async context =>
+    {
+        var exception = context.Features
+            .Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>()
+            ?.Error;
+
+        var statusCode = exception switch
+        {
+            StockNotFoundException =>
+                StatusCodes.Status404NotFound,
+
+            UpstreamTimeoutException =>
+                StatusCodes.Status504GatewayTimeout,
+
+            UpstreamServiceException =>
+                StatusCodes.Status502BadGateway,
+
+            _ =>
+                StatusCodes.Status500InternalServerError
+        };
+
+        var title = statusCode switch
+        {
+            StatusCodes.Status404NotFound =>
+                "Stock data not found",
+
+            StatusCodes.Status502BadGateway =>
+                "Stock provider error",
+
+            StatusCodes.Status504GatewayTimeout =>
+                "Stock provider timeout",
+
+            _ =>
+                "Unexpected server error"
+        };
+
+        var detail = exception is StockNotFoundException
+            ? exception.Message
+            : "The request could not be completed.";
+
+        await Results.Problem(
+            statusCode: statusCode,
+            title: title,
+            detail: detail)
+            .ExecuteAsync(context);
+    });
+});
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -16,29 +94,15 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+app.MapStockEndpoints();
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
+app.MapGet(
+        "/health",
+        () => Results.Ok(new
+        {
+            status = "healthy",
+            timestamp = DateTimeOffset.UtcNow
+        }))
+    .WithTags("Health");
 
 app.Run();
-
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
