@@ -366,7 +366,7 @@ assistance. Generated work was reviewed against the existing architecture,
 modified where needed, tested, and deliberately accepted or rejected rather
 than applied without review.
 
-##Note
+## Note
 Development was completed within approximately four hours, excluding final documentation and submission checks
 
 See [`PROMPT_LOG.md`](PROMPT_LOG.md) for the detailed collaboration record,
