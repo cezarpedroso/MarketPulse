@@ -1,11 +1,16 @@
 import type { ReactNode } from "react";
+import { Moon, Sun } from "lucide-react";
 import brandLogo from "../../assets/stockapplogo.png";
+import { useTheme } from "../../hooks/useTheme";
 
 interface HeaderProps {
   children: ReactNode;
 }
 
 export function Header({ children }: HeaderProps) {
+  const { theme, toggleTheme } = useTheme();
+  const nextTheme = theme === "light" ? "dark" : "light";
+
   return (
     <header className="site-header">
       <div className="header-inner">
@@ -20,7 +25,23 @@ export function Header({ children }: HeaderProps) {
             <span>Explore daily trends from intraday market data</span>
           </div>
         </a>
-        {children}
+        <div className="header-actions">
+          {children}
+          <button
+            className="theme-toggle"
+            type="button"
+            aria-label={`Switch to ${nextTheme} theme`}
+            title={`Switch to ${nextTheme} theme`}
+            aria-pressed={theme === "dark"}
+            onClick={toggleTheme}
+          >
+            {theme === "light" ? (
+              <Moon size={18} aria-hidden="true" />
+            ) : (
+              <Sun size={18} aria-hidden="true" />
+            )}
+          </button>
+        </div>
       </div>
     </header>
   );

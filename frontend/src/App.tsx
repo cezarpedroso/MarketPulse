@@ -167,11 +167,15 @@ export default function App() {
               message={requestError.message}
             />
           )}
-          {!loadingSymbol && !requestError && results === null && <EmptyState />}
+          {!loadingSymbol && !requestError && results === null && (
+            <EmptyState />
+          )}
           {!loadingSymbol &&
             !requestError &&
             results !== null &&
-            results.length === 0 && <EmptyState symbol={activeSymbol ?? undefined} />}
+            results.length === 0 && (
+              <EmptyState symbol={activeSymbol ?? undefined} />
+            )}
           {!loadingSymbol &&
             !requestError &&
             results !== null &&

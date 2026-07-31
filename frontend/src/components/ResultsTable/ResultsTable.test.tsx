@@ -1,4 +1,9 @@
-import { render, screen, within } from "@testing-library/react";
+import {
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import type { DailyStockSummary } from "../../types/stock";
@@ -24,7 +29,13 @@ describe("ResultsTable", () => {
       screen.getByRole("columnheader", { name: "Date" }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("columnheader", { name: "Average low (USD)" }),
+      screen.getByRole("columnheader", { name: "Avg low" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("columnheader", { name: "Avg high" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("columnheader", { name: "Volume" }),
     ).toBeInTheDocument();
     expect(screen.getByText("100.1235")).toBeInTheDocument();
     expect(screen.getByText("110.9877")).toBeInTheDocument();
@@ -62,7 +73,7 @@ describe("ResultsTable", () => {
     ]);
   });
 
-  it("paginates more than ten rows", async () => {
+  it("paginates more than ten rows in both directions", async () => {
     const user = userEvent.setup();
     const results = Array.from({ length: 12 }, (_, index) =>
       createResult(`2024-05-${String(index + 1).padStart(2, "0")}`),
@@ -70,16 +81,60 @@ describe("ResultsTable", () => {
 
     render(<ResultsTable results={results} />);
 
-    expect(screen.getAllByRole("row")).toHaveLength(11);
+    expect(screen.getAllByRole("row")).toHaveLength(9);
     expect(screen.getByText("Page 1 of 2")).toBeInTheDocument();
     expect(screen.getByText("May 12, 2024")).toBeInTheDocument();
     expect(screen.queryByText("May 1, 2024")).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Previous page" }),
+    ).toBeDisabled();
+    expect(
+      screen.getByRole("button", { name: "Next page" }),
+    ).toBeEnabled();
 
     await user.click(screen.getByRole("button", { name: "Next page" }));
 
     expect(screen.getByText("Page 2 of 2")).toBeInTheDocument();
-    expect(screen.getAllByRole("row")).toHaveLength(3);
+    expect(screen.getAllByRole("row")).toHaveLength(5);
     expect(screen.getByText("May 1, 2024")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Next page" }),
+    ).toBeDisabled();
+    expect(
+      screen.getByRole("button", { name: "Previous page" }),
+    ).toBeEnabled();
+
+    await user.click(screen.getByRole("button", { name: "Previous page" }));
+
+    expect(screen.getByText("Page 1 of 2")).toBeInTheDocument();
+    expect(screen.getByText("May 12, 2024")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Previous page" }),
+    ).toBeDisabled();
+  });
+
+  it("resets pagination to page one when results change", async () => {
+    const user = userEvent.setup();
+    const firstResults = Array.from({ length: 12 }, (_, index) =>
+      createResult(`2024-05-${String(index + 1).padStart(2, "0")}`),
+    );
+    const nextResults = Array.from({ length: 3 }, (_, index) =>
+      createResult(`2024-06-${String(index + 1).padStart(2, "0")}`),
+    );
+    const { rerender } = render(<ResultsTable results={firstResults} />);
+
+    await user.click(screen.getByRole("button", { name: "Next page" }));
+    expect(screen.getByText("Page 2 of 2")).toBeInTheDocument();
+
+    rerender(<ResultsTable results={nextResults} />);
+
+    await waitFor(() =>
+      expect(screen.getByText("Page 1 of 1")).toBeInTheDocument(),
+    );
+    expect(screen.getByText("Jun 3, 2024")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Previous page" }),
+    ).toBeDisabled();
     expect(
       screen.getByRole("button", { name: "Next page" }),
     ).toBeDisabled();

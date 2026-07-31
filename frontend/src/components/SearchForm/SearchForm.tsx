@@ -1,7 +1,6 @@
 import type { FormEvent } from "react";
 import { LoaderCircle, Search } from "lucide-react";
-
-const QUICK_PICKS = ["AAPL", "MSFT", "TSLA", "NVDA"];
+import { QUICK_PICK_SYMBOLS } from "../../constants/stockSymbols";
 
 interface SearchFormProps {
   symbol: string;
@@ -75,11 +74,11 @@ export function SearchForm({
 
         <div className="quick-picks" aria-label="Popular stock symbols">
           <span>Quick picks</span>
-          {QUICK_PICKS.map((quickPick) => (
+          {QUICK_PICK_SYMBOLS.map((quickPick) => (
             <button
               key={quickPick}
               type="button"
-              disabled={loadingSymbol === quickPick}
+              disabled={loadingSymbol !== null}
               onClick={() => handleQuickPick(quickPick)}
             >
               {quickPick}

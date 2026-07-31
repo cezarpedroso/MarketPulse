@@ -49,5 +49,7 @@ describe("deriveMarketSummary", () => {
 
     expect(summary.overallAverageLow).toBeNull();
     expect(summary.overallAverageHigh).toBeNull();
+    expect(summary.overallAverageLow).not.toBe(0);
+    expect(summary.overallAverageHigh).not.toBe(0);
   });
 });

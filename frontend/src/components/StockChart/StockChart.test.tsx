@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { DailyStockSummary } from "../../types/stock";
 import { StockChart } from "./StockChart";
 
@@ -28,18 +28,29 @@ vi.mock("recharts", () => ({
   Line: ({
     dataKey,
     connectNulls,
+    name,
+    stroke,
   }: {
     dataKey: string;
     connectNulls: boolean;
+    name: string;
+    stroke: string;
   }) => (
     <div
       data-testid={`line-${dataKey}`}
       data-connect-nulls={String(connectNulls)}
+      data-series-name={name}
+      data-stroke={stroke}
     />
   ),
 }));
 
 describe("StockChart", () => {
+  beforeEach(() => {
+    chartDataSpy.mockClear();
+    document.documentElement.removeAttribute("data-theme");
+  });
+
   it("receives ascending chart data and preserves null averages", () => {
     const results: DailyStockSummary[] = [
       {
@@ -93,9 +104,54 @@ describe("StockChart", () => {
       "data-connect-nulls",
       "false",
     );
+    expect(screen.getByTestId("line-highAverage")).toHaveAttribute(
+      "data-series-name",
+      "Average High",
+    );
+    expect(screen.getByTestId("line-highAverage")).toHaveAttribute(
+      "data-stroke",
+      "var(--chart-high)",
+    );
     expect(screen.getByTestId("line-lowAverage")).toHaveAttribute(
       "data-connect-nulls",
       "false",
     );
+    expect(screen.getByTestId("line-lowAverage")).toHaveAttribute(
+      "data-series-name",
+      "Average Low",
+    );
+    expect(screen.getByTestId("line-lowAverage")).toHaveAttribute(
+      "data-stroke",
+      "var(--chart-low)",
+    );
   });
+
+  it.each(["light", "dark"] as const)(
+    "keeps an accessible title and description in the %s theme",
+    (theme) => {
+      document.documentElement.dataset.theme = theme;
+
+      render(
+        <StockChart
+          results={[
+            {
+              day: "2024-05-01",
+              lowAverage: 100,
+              highAverage: 110,
+              volume: 1_000,
+            },
+          ]}
+        />,
+      );
+
+      expect(
+        screen.getByRole("heading", {
+          name: "Daily average high and low",
+        }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(/Average high and low prices across 1 trading days/),
+      ).toHaveTextContent("May 1, 2024");
+    },
+  );
 });

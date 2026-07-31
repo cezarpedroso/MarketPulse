@@ -88,7 +88,7 @@ export function StockChart({ results }: StockChartProps) {
             accessibilityLayer
           >
             <CartesianGrid
-              stroke="#e7ebef"
+              stroke="var(--chart-grid)"
               strokeDasharray="3 5"
               vertical={false}
             />
@@ -96,19 +96,19 @@ export function StockChart({ results }: StockChartProps) {
               dataKey="day"
               tickFormatter={formatChartDate}
               minTickGap={44}
-              tick={{ fill: "#697586", fontSize: 11 }}
+              tick={{ fill: "var(--chart-axis)", fontSize: 11 }}
               tickLine={false}
-              axisLine={{ stroke: "#d6dce3" }}
+              axisLine={{ stroke: "var(--chart-axis-line)" }}
               label={{
                 value: "Date",
                 position: "insideBottom",
                 offset: -12,
-                fill: "#5d6978",
+                fill: "var(--chart-axis-label)",
               }}
             />
             <YAxis
               width={68}
-              tick={{ fill: "#697586", fontSize: 11 }}
+              tick={{ fill: "var(--chart-axis)", fontSize: 11 }}
               tickLine={false}
               axisLine={false}
               domain={["auto", "auto"]}
@@ -116,12 +116,12 @@ export function StockChart({ results }: StockChartProps) {
                 value: "Price (USD)",
                 angle: -90,
                 position: "insideLeft",
-                fill: "#5d6978",
+                fill: "var(--chart-axis-label)",
               }}
             />
             <Tooltip
               content={<ChartTooltip />}
-              cursor={{ stroke: "#cfd6de", strokeWidth: 1 }}
+              cursor={{ stroke: "var(--chart-cursor)", strokeWidth: 1 }}
             />
             <Legend
               verticalAlign="top"
@@ -133,10 +133,14 @@ export function StockChart({ results }: StockChartProps) {
               type="monotone"
               dataKey="highAverage"
               name="Average High"
-              stroke="#3b8069"
+              stroke="var(--chart-high)"
               strokeWidth={2}
               dot={false}
-              activeDot={{ r: 4, stroke: "#ffffff", strokeWidth: 2 }}
+              activeDot={{
+                r: 4,
+                stroke: "var(--chart-active-dot)",
+                strokeWidth: 2,
+              }}
               connectNulls={false}
               isAnimationActive={false}
             />
@@ -144,10 +148,14 @@ export function StockChart({ results }: StockChartProps) {
               type="monotone"
               dataKey="lowAverage"
               name="Average Low"
-              stroke="#c25f5f"
+              stroke="var(--chart-low)"
               strokeWidth={2}
               dot={false}
-              activeDot={{ r: 4, stroke: "#ffffff", strokeWidth: 2 }}
+              activeDot={{
+                r: 4,
+                stroke: "var(--chart-active-dot)",
+                strokeWidth: 2,
+              }}
               connectNulls={false}
               isAnimationActive={false}
             />

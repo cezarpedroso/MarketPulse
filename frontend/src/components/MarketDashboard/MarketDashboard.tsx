@@ -32,8 +32,10 @@ export function MarketDashboard({
       </header>
 
       <SummaryCards summary={summary} />
-      <StockChart results={results} />
-      <ResultsTable results={results} />
+      <div className="dashboard-data-grid">
+        <StockChart results={results} />
+        <ResultsTable results={results} />
+      </div>
     </section>
   );
 }

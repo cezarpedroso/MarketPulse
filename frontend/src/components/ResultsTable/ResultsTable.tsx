@@ -12,7 +12,7 @@ interface ResultsTableProps {
   results: DailyStockSummary[];
 }
 
-const ROWS_PER_PAGE = 10;
+const ROWS_PER_PAGE = 8;
 
 export function ResultsTable({ results }: ResultsTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -48,9 +48,9 @@ export function ResultsTable({ results }: ResultsTableProps) {
           <thead>
             <tr>
               <th scope="col">Date</th>
-              <th scope="col" className="numeric">Average low (USD)</th>
-              <th scope="col" className="numeric">Average high (USD)</th>
-              <th scope="col" className="numeric">Volume (shares)</th>
+              <th scope="col" className="numeric">Avg low</th>
+              <th scope="col" className="numeric">Avg high</th>
+              <th scope="col" className="numeric">Volume</th>
             </tr>
           </thead>
           <tbody>
