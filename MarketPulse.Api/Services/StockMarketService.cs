@@ -5,16 +5,21 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using MarketPulse.Api.Clients;
 using MarketPulse.Api.Models;
+using Microsoft.Extensions.Logging;
 
 namespace MarketPulse.Api.Services;
 
 public sealed class StockMarketService : IStockMarketService
 {
     private readonly IStockMarketClient _client;
+    private readonly ILogger<StockMarketService>? _logger;
 
-    public StockMarketService(IStockMarketClient client)
+    public StockMarketService(
+        IStockMarketClient client,
+        ILogger<StockMarketService>? logger = null)
     {
         _client = client;
+        _logger = logger;
     }
 
     public async Task<IReadOnlyList<DailyStockSummaryDto>> GetDailySummaryAsync(
@@ -31,8 +36,13 @@ public sealed class StockMarketService : IStockMarketService
         {
             tzInfo = TimeZoneInfo.FindSystemTimeZoneById(data.ExchangeTimeZone);
         }
-        catch
+        catch (Exception exception)
         {
+            _logger?.LogWarning(
+                exception,
+                "Unable to resolve exchange timezone {ExchangeTimeZone}; falling back to UTC.",
+                data.ExchangeTimeZone);
+
             tzInfo = TimeZoneInfo.Utc;
         }
 
@@ -44,13 +54,28 @@ public sealed class StockMarketService : IStockMarketService
                 var lows = g.Where(i => i.Low.HasValue).Select(i => i.Low!.Value).ToArray();
                 var highs = g.Where(i => i.High.HasValue).Select(i => i.High!.Value).ToArray();
                 var volume = g.Where(i => i.Volume.HasValue).Sum(i => i.Volume!.Value);
-                var lowAvg = lows.Length == 0 ? 0m : lows.Average();
-                var highAvg = highs.Length == 0 ? 0m : highs.Average();
-                return new DailyStockSummaryDto(DateOnly.FromDateTime(g.Key), lowAvg, highAvg, volume);
+                var lowAvg = lows.Length == 0
+                    ? (decimal?)null
+                    : lows.Average();
+                var highAvg = highs.Length == 0
+                    ? (decimal?)null
+                    : highs.Average();
+                return new DailyStockSummaryDto(
+                    DateOnly.FromDateTime(g.Key),
+                    RoundPrice(lowAvg),
+                    RoundPrice(highAvg),
+                    volume);
             })
             .OrderBy(s => s.Day)
             .ToArray();
 
         return grouped;
+    }
+
+    private static decimal? RoundPrice(decimal? price)
+    {
+        return price.HasValue
+            ? decimal.Round(price.Value, 4, MidpointRounding.AwayFromZero)
+            : null;
     }
 }

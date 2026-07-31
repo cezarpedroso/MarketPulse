@@ -1,6 +1,16 @@
 @MarketPulse.Api_HostAddress = http://localhost:5065
 
-GET {{MarketPulse.Api_HostAddress}}/weatherforecast/
+GET {{MarketPulse.Api_HostAddress}}/health
 Accept: application/json
+
+###
+
+GET {{MarketPulse.Api_HostAddress}}/api/stocks/AAPL/intraday
+Accept: application/json
+
+###
+
+GET {{MarketPulse.Api_HostAddress}}/api/stocks/AAPL%24/intraday
+Accept: application/problem+json
 
 ###

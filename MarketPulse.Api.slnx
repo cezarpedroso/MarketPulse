@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="MarketPulse.Api.Tests/MarketPulse.Api.Tests.csproj" />
   <Project Path="MarketPulse.Api/MarketPulse.Api.csproj" />
 </Solution>

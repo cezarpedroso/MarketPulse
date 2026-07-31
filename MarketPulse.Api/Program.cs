@@ -5,11 +5,25 @@ using MarketPulse.Api.Exceptions;
 using MarketPulse.Api.Services;
 using Microsoft.Extensions.Options;
 
+const string ReactDevelopmentCorsPolicy = "ReactDevelopment";
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddProblemDetails();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        ReactDevelopmentCorsPolicy,
+        policy =>
+        {
+            policy
+                .WithOrigins("http://localhost:5173")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
 
 builder.Services.AddScoped<
     IStockMarketService,
@@ -93,6 +107,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors(ReactDevelopmentCorsPolicy);
 
 app.MapStockEndpoints();
 
@@ -106,3 +121,7 @@ app.MapGet(
     .WithTags("Health");
 
 app.Run();
+
+public partial class Program
+{
+}

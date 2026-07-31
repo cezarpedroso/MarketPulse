@@ -4,7 +4,6 @@ using System.Net.Http.Json;
 using MarketPulse.Api.Exceptions;
 using MarketPulse.Api.Models;
 using MarketPulse.Api.Models.Yahoo;
-using MarketPulse.Api.Models;
 
 namespace MarketPulse.Api.Clients;
 
@@ -36,6 +35,16 @@ public sealed class YahooFinanceClient(
         {
             throw new UpstreamTimeoutException(
                 "The stock-data provider did not respond in time.");
+        }
+        catch (HttpRequestException exception)
+        {
+            logger.LogWarning(
+                exception,
+                "Yahoo Finance request failed for {Symbol}",
+                symbol);
+
+            throw new UpstreamServiceException(
+                "The stock-data provider could not be reached.");
         }
 
         using (response)
@@ -78,7 +87,19 @@ public sealed class YahooFinanceClient(
 
             if (payload?.Chart?.Error is not null)
             {
-                throw new StockNotFoundException(symbol);
+                if (IsSymbolError(payload.Chart.Error))
+                {
+                    throw new StockNotFoundException(symbol);
+                }
+
+                logger.LogWarning(
+                    "Yahoo Finance returned chart error {ErrorCode} for {Symbol}: {ErrorDescription}",
+                    payload.Chart.Error.Code,
+                    symbol,
+                    payload.Chart.Error.Description);
+
+                throw new UpstreamServiceException(
+                    "The stock-data provider returned an error.");
             }
 
             var result = payload?.Chart?.Result?.FirstOrDefault();
@@ -121,10 +142,29 @@ public sealed class YahooFinanceClient(
                     volumes[index]));
             }
 
-            List<IntradayStockPoint> points1 = points;
             return new IntradayStockData(
-                points1,
+                points,
                 result.Meta?.ExchangeTimezoneName ?? "UTC");
         }
+    }
+
+    private static bool IsSymbolError(YahooChartError error)
+    {
+        var text = string.Join(
+            ' ',
+            error.Code,
+            error.Description);
+
+        return Contains(text, "not found") ||
+            Contains(text, "no data") ||
+            Contains(text, "invalid symbol") ||
+            Contains(text, "delisted");
+    }
+
+    private static bool Contains(string text, string value)
+    {
+        return text.Contains(
+            value,
+            StringComparison.OrdinalIgnoreCase);
     }
 }

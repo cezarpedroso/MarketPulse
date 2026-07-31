@@ -20,7 +20,11 @@ public static class StockEndpoints
             .WithSummary("Returns aggregated daily stock data")
             .Produces<IReadOnlyList<DailyStockSummaryDto>>(
                 StatusCodes.Status200OK)
-            .ProducesProblem(StatusCodes.Status400BadRequest);
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status502BadGateway)
+            .ProducesProblem(StatusCodes.Status504GatewayTimeout)
+            .ProducesProblem(StatusCodes.Status500InternalServerError);
 
         return endpoints;
     }
