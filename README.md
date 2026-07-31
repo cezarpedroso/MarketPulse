@@ -39,7 +39,7 @@ infrastructure because none is needed for the current assessment.
 | Display data meaningfully | Summary metrics, Recharts line chart, and table |
 | Handle invalid symbols and request failures | Local validation, Problem Details, and friendly UI states |
 | Include local setup instructions | Included in this README |
-| Include an AI collaboration prompt log | `PROMPT_LOG.md` is not yet present and remains a submission task |
+| Include an AI collaboration prompt log | Documented in [`PROMPT_LOG.md`](PROMPT_LOG.md) |
 
 ## Features
 
@@ -348,8 +348,6 @@ Frontend tests mock the API layer and do not call the backend or Yahoo Finance.
   tracking, authentication, or user accounts.
 - The frontend and backend are configured for separate local development
   processes; production hosting configuration is not included.
-- The required detailed AI collaboration log, `PROMPT_LOG.md`, has not yet been
-  added.
 
 ## Future improvements
 
@@ -359,7 +357,6 @@ Frontend tests mock the API layer and do not call the backend or Yahoo Finance.
 - Add end-to-end browser tests covering the running frontend and backend.
 - Add CI workflows for backend tests, frontend tests, and production builds.
 - Add production deployment configuration and environment-specific CORS.
-- Add the required `PROMPT_LOG.md` collaboration record.
 
 ## AI-assisted development
 
@@ -369,6 +366,6 @@ assistance. Generated work was reviewed against the existing architecture,
 modified where needed, tested, and deliberately accepted or rejected rather
 than applied without review.
 
-The detailed collaboration record is intended to live in `PROMPT_LOG.md`. That
-file is not currently present and should be completed before final submission;
-no prompt-log entries have been invented here.
+See [`PROMPT_LOG.md`](PROMPT_LOG.md) for the detailed collaboration record,
+including the prompts used, retained work, modifications, rejected suggestions,
+manual decisions, and verification evidence.
