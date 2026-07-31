@@ -23,13 +23,13 @@ AI-generated or heavily AI-assisted.
 | Entry | Area | AI tool | Purpose | Outcome |
 | --- | --- | --- | --- | --- |
 | 1 | Repository analysis | Codex, model not recorded | Compare the existing backend with the assessment | Existing architecture and remaining work were identified without code changes |
-| 2 | Backend and Yahoo integration | ChatGPT chatbot, model not recorded | Discuss structure and edge cases around the developer-authored backend | Manual architecture retained; no recoverable implementation prompt |
+| 2 | Backend and Yahoo integration | ChatGPT chatbot, model not recorded | Discuss structure and edge cases around the developer-authored backend | Manual architecture retained; screenshots document the structural review |
 | 3 | Backend unit tests | Codex, model not recorded | Add focused validator and aggregation coverage | xUnit project and isolated tests added |
 | 4 | Backend resilience | Codex, model not recorded | Tighten provider error mapping and endpoint integration coverage | Narrow production fixes and integration tests added |
 | 5 | Missing averages and Yahoo errors | Codex, model not recorded | Prevent missing prices from being represented as zero | Nullable averages and better provider-error classification retained |
 | 6 | Frontend foundation | Codex, model not recorded | Build the React search and API flow | React, TypeScript, Vite frontend added |
 | 7 | Data presentation | Codex, model not recorded | Add derived summaries, chart, and table | Recharts dashboard and pagination added |
-| 8 | UI refinement | Codex, model not recorded | Improve responsive layout, branding, and accessibility | Responsive polished dashboard retained |
+| 8 | UI refinement | ChatGPT chatbot and Codex, models not recorded | Explore a visual direction, then improve responsive layout, branding, and accessibility | Responsive polished dashboard retained |
 | 9 | Themes | Codex, model not recorded | Add persistent light and dark themes | CSS-variable theme system added and refined |
 | 10 | Frontend testing | Codex, model not recorded | Expand behavior and accessibility verification | Focused test coverage expanded; one loading-state defect fixed |
 | 11 | Project documentation | Codex, model not recorded | Create an implementation-accurate README | Root README and repository images added |
@@ -176,15 +176,30 @@ ChatGPT chatbot; model not recorded.
 
 ### Exact prompt
 
+Initial prompt shown in the first supporting screenshot:
+
 ```text
-[Paste the exact prompt used here]
+I need to create this project. I am now coding the backend and need a few instructions on the code design and the architecture, meaning files and folders I will use, .NET 8 and React for the project. I already create the ASP.NET Core Web API and create the endpoint, models, services, validation, and client folder. I just need a basic syntax/code structure of the program.cs for dependency injection so I can have a reference of the whole file. I will also be using Swagger and Postman to test the API
+```
+
+Follow-up prompt shown in the second supporting screenshot:
+
+```text
+Should I create an Exceptions folder? and about the Yahoo client, should I create a different folder as well?
 ```
 
 ### Why this prompt was used
 
-The exact chatbot prompt used while discussing the original backend structure
-cannot be recovered from the repository or current session. The available
-record only supports a limited review role.
+The developer wanted a reference for organizing the manually implemented
+backend, registering dependencies in `Program.cs`, and separating exception and
+Yahoo client responsibilities. The screenshots support a limited structural
+review role rather than backend code generation.
+
+### Supporting screenshots
+
+![ChatGPT discussion of the backend structure](docs/images/chatgpt-backend-structure.png)
+
+![ChatGPT discussion of the exception and Yahoo client folders](docs/images/chatgpt-backend-exceptions.png)
 
 ### What was kept
 
@@ -858,9 +873,11 @@ The data presentation was introduced in `6bfc9b4` and refined in `380e598` and
 
 ### Tool and model
 
-Codex; model not recorded.
+ChatGPT chatbot and Codex; models not recorded.
 
 ### Exact prompt
+
+Codex implementation prompt:
 
 ```text
 Continue from the existing completed MarketPulse frontend.
@@ -966,10 +983,36 @@ Report:
 Do not claim any command passed unless it completed successfully.
 ```
 
+ChatGPT prompts shown in the supporting screenshots:
+
+```text
+generate the best UI I can build
+```
+
+```text
+now generate a dark mode that is more grayish than blue
+```
+
+```text
+can you make the icons in the cards smaller
+```
+
+```text
+okay, this is the design I want. the light mode and dark mode are perfect, just include the small icons in the cards in the light mode as well. Now generate a prompt to use as the main design guide when I design the application, make the language natural but also technical
+```
+
 ### Why this prompt was used
 
-The functional dashboard needed a coherent visual system, responsive behavior,
-and a final accessibility pass.
+ChatGPT was used to explore light and dark visual references and refine the
+design-guide wording. Codex then used the reviewed visual direction while
+working on the real frontend's visual system, responsive behavior, and
+accessibility.
+
+### Supporting screenshots
+
+![ChatGPT frontend light and dark mockup exploration](docs/images/chatgpt-frontend-mockups.png)
+
+![ChatGPT frontend design-guide prompt discussion](docs/images/chatgpt-frontend-design-guide.png)
 
 ### What was kept
 
