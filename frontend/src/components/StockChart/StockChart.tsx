@@ -46,7 +46,7 @@ function ChartTooltip({
           <strong>
             {typeof entry.value === "number"
               ? formatAverage(entry.value)
-              : "—"}
+              : "\u2014"}
           </strong>
         </div>
       ))}
@@ -73,13 +73,10 @@ export function StockChart({ results }: StockChartProps) {
   return (
     <section className="chart-section" aria-labelledby="chart-title">
       <div className="panel-heading">
-        <div>
-          <span className="eyebrow">Price movement</span>
-          <h3 id="chart-title">Daily average high and low</h3>
-        </div>
+        <h3 id="chart-title">Daily average high and low</h3>
       </div>
 
-      <p className="chart-summary" id="chart-summary">
+      <p className="chart-summary visually-hidden" id="chart-summary">
         {chartSummary}
       </p>
 
@@ -87,64 +84,70 @@ export function StockChart({ results }: StockChartProps) {
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={chartData}
-            margin={{ top: 12, right: 24, bottom: 24, left: 14 }}
+            margin={{ top: 4, right: 20, bottom: 22, left: 8 }}
             accessibilityLayer
           >
-            <CartesianGrid stroke="#dde5e1" strokeDasharray="4 4" />
+            <CartesianGrid
+              stroke="#e7ebef"
+              strokeDasharray="3 5"
+              vertical={false}
+            />
             <XAxis
               dataKey="day"
               tickFormatter={formatChartDate}
-              minTickGap={24}
-              tick={{ fill: "#61706a", fontSize: 12 }}
+              minTickGap={44}
+              tick={{ fill: "#697586", fontSize: 11 }}
               tickLine={false}
-              axisLine={{ stroke: "#bdc9c4" }}
+              axisLine={{ stroke: "#d6dce3" }}
               label={{
                 value: "Date",
                 position: "insideBottom",
                 offset: -12,
-                fill: "#4e5d57",
+                fill: "#5d6978",
               }}
             />
             <YAxis
-              width={76}
-              tick={{ fill: "#61706a", fontSize: 12 }}
+              width={68}
+              tick={{ fill: "#697586", fontSize: 11 }}
               tickLine={false}
-              axisLine={{ stroke: "#bdc9c4" }}
+              axisLine={false}
               domain={["auto", "auto"]}
               label={{
                 value: "Price (USD)",
                 angle: -90,
                 position: "insideLeft",
-                fill: "#4e5d57",
+                fill: "#5d6978",
               }}
             />
-            <Tooltip content={<ChartTooltip />} />
+            <Tooltip
+              content={<ChartTooltip />}
+              cursor={{ stroke: "#cfd6de", strokeWidth: 1 }}
+            />
             <Legend
               verticalAlign="top"
               align="right"
-              height={42}
+              height={34}
               iconType="line"
             />
             <Line
               type="monotone"
               dataKey="highAverage"
               name="Average High"
-              stroke="#2f8a61"
-              strokeWidth={2.5}
+              stroke="#3b8069"
+              strokeWidth={2}
               dot={false}
-              activeDot={{ r: 4 }}
+              activeDot={{ r: 4, stroke: "#ffffff", strokeWidth: 2 }}
               connectNulls={false}
-              strokeDasharray="7 5"
               isAnimationActive={false}
             />
             <Line
               type="monotone"
               dataKey="lowAverage"
               name="Average Low"
-              stroke="#c55353"
-              strokeWidth={2.5}
+              stroke="#c25f5f"
+              strokeWidth={2}
               dot={false}
-              activeDot={{ r: 4 }}
+              activeDot={{ r: 4, stroke: "#ffffff", strokeWidth: 2 }}
               connectNulls={false}
               isAnimationActive={false}
             />

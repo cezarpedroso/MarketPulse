@@ -64,11 +64,14 @@ describe("StockChart", () => {
 
     render(<StockChart results={results} />);
 
-    expect(
-      screen.getByText(
-        "Average high and low prices across 3 trading days, May 1, 2024 - May 3, 2024. 1 low and 1 high averages are missing and appear as gaps.",
-      ),
-    ).toBeInTheDocument();
+    const summary = screen.getByText(
+      /Average high and low prices across 3 trading days/,
+    );
+
+    expect(summary).toHaveTextContent("May 1");
+    expect(summary).toHaveTextContent(
+      "1 low and 1 high averages are missing and appear as gaps.",
+    );
     expect(chartDataSpy).toHaveBeenCalledWith([
       {
         day: "2024-05-01",

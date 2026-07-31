@@ -24,7 +24,7 @@ describe("ResultsTable", () => {
       screen.getByRole("columnheader", { name: "Date" }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("columnheader", { name: "Average Low (USD)" }),
+      screen.getByRole("columnheader", { name: "Average low (USD)" }),
     ).toBeInTheDocument();
     expect(screen.getByText("100.1235")).toBeInTheDocument();
     expect(screen.getByText("110.9877")).toBeInTheDocument();
@@ -38,7 +38,7 @@ describe("ResultsTable", () => {
       />,
     );
 
-    expect(screen.getAllByText("—")).toHaveLength(2);
+    expect(screen.getAllByText("\u2014")).toHaveLength(2);
   });
 
   it("orders dates descending without mutating the input", () => {
@@ -75,13 +75,13 @@ describe("ResultsTable", () => {
     expect(screen.getByText("May 12, 2024")).toBeInTheDocument();
     expect(screen.queryByText("May 1, 2024")).not.toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: "Next" }));
+    await user.click(screen.getByRole("button", { name: "Next page" }));
 
     expect(screen.getByText("Page 2 of 2")).toBeInTheDocument();
     expect(screen.getAllByRole("row")).toHaveLength(3);
     expect(screen.getByText("May 1, 2024")).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: "Next" }),
+      screen.getByRole("button", { name: "Next page" }),
     ).toBeDisabled();
   });
 });

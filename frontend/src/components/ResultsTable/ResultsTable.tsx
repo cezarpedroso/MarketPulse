@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { DailyStockSummary } from "../../types/stock";
 import {
   formatAverage,
@@ -33,10 +34,7 @@ export function ResultsTable({ results }: ResultsTableProps) {
   return (
     <section className="table-section" aria-labelledby="table-title">
       <div className="panel-heading">
-        <div>
-          <span className="eyebrow">Daily breakdown</span>
-          <h3 id="table-title">Daily trading data</h3>
-        </div>
+        <h3 id="table-title">Daily data</h3>
         <span className="result-count">
           {results.length} trading {results.length === 1 ? "day" : "days"}
         </span>
@@ -50,9 +48,9 @@ export function ResultsTable({ results }: ResultsTableProps) {
           <thead>
             <tr>
               <th scope="col">Date</th>
-              <th scope="col" className="numeric">Average Low (USD)</th>
-              <th scope="col" className="numeric">Average High (USD)</th>
-              <th scope="col" className="numeric">Volume (Shares)</th>
+              <th scope="col" className="numeric">Average low (USD)</th>
+              <th scope="col" className="numeric">Average high (USD)</th>
+              <th scope="col" className="numeric">Volume (shares)</th>
             </tr>
           </thead>
           <tbody>
@@ -77,20 +75,24 @@ export function ResultsTable({ results }: ResultsTableProps) {
       <nav className="pagination" aria-label="Table pagination">
         <button
           type="button"
+          aria-label="Previous page"
+          title="Previous page"
           onClick={() => setCurrentPage((page) => page - 1)}
           disabled={currentPage === 1}
         >
-          Previous
+          <ChevronLeft size={17} aria-hidden="true" />
         </button>
         <span aria-live="polite">
           Page {currentPage} of {totalPages}
         </span>
         <button
           type="button"
+          aria-label="Next page"
+          title="Next page"
           onClick={() => setCurrentPage((page) => page + 1)}
           disabled={currentPage === totalPages}
         >
-          Next
+          <ChevronRight size={17} aria-hidden="true" />
         </button>
       </nav>
     </section>

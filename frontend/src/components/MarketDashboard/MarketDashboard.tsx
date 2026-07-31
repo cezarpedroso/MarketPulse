@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import type { DailyStockSummary } from "../../types/stock";
+import { formatDateRange } from "../../utils/formatters";
 import { deriveMarketSummary } from "../../utils/stockData";
 import { ResultsTable } from "../ResultsTable/ResultsTable";
 import { StockChart } from "../StockChart/StockChart";
@@ -19,14 +20,18 @@ export function MarketDashboard({
   return (
     <section className="market-dashboard" aria-labelledby="dashboard-title">
       <header className="dashboard-heading">
-        <div>
-          <span className="eyebrow">Market overview</span>
-          <h2 id="dashboard-title">{symbol}</h2>
-          <p>Aggregated intraday market data overview</p>
-        </div>
+        <h2 id="dashboard-title">{symbol}</h2>
+        <p className="dashboard-meta">
+          <span>{formatDateRange(summary.startDay, summary.endDay)}</span>
+          <span aria-hidden="true">{"\u00b7"}</span>
+          <span>
+            {summary.tradingDays} trading{" "}
+            {summary.tradingDays === 1 ? "day" : "days"}
+          </span>
+        </p>
       </header>
 
-      <SummaryCards symbol={symbol} summary={summary} />
+      <SummaryCards summary={summary} />
       <StockChart results={results} />
       <ResultsTable results={results} />
     </section>
